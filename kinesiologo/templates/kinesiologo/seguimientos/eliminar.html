@@ -1,0 +1,46 @@
+{% extends 'kinesiologo/base.html' %}
+
+{% block title %}Eliminar Seguimiento - TeleRehab{% endblock %}
+
+{% block content %}
+<div class="animate-fade-in-up max-w-md mx-auto">
+    <div class="text-center mb-8">
+        <div class="w-20 h-20 mx-auto rounded-full bg-rose-500/10 flex items-center justify-center mb-4">
+            <i class="fas fa-exclamation-triangle text-4xl text-rose-400"></i>
+        </div>
+        <h1 class="text-2xl font-bold text-white">¿Eliminar seguimiento?</h1>
+        <p class="text-zinc-400 mt-2">¿Estás seguro de que quieres eliminar este seguimiento?</p>
+        <p class="text-sm text-zinc-500 mt-1">Esta acción no se puede deshacer.</p>
+    </div>
+
+    <div class="rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-sm p-6 mb-6">
+        <div class="space-y-2">
+            <p><span class="text-sm text-zinc-500">Paciente:</span> <span class="text-white">{{ seguimiento.paciente.nombre }}</span></p>
+            <p><span class="text-sm text-zinc-500">Fecha:</span> <span class="text-white">{{ seguimiento.fecha|date:"d/m/Y" }}</span></p>
+            <p><span class="text-sm text-zinc-500">Tipo:</span> <span class="text-white">{{ seguimiento.get_tipo_control_display }}</span></p>
+            <p><span class="text-sm text-zinc-500">Cumplió ejercicios:</span>
+                {% if seguimiento.cumple_ejercicios %}
+                    <span class="ml-2 text-green-400">✅ Sí</span>
+                {% else %}
+                    <span class="ml-2 text-red-400">❌ No</span>
+                {% endif %}
+            </p>
+            {% if seguimiento.fecha_proximo_control %}
+                <p><span class="text-sm text-zinc-500">Próximo control:</span> 
+                    <span class="text-teal-300">{{ seguimiento.fecha_proximo_control|date:"d/m/Y" }}</span>
+                </p>
+            {% endif %}
+        </div>
+    </div>
+
+    <form method="POST" class="flex justify-center space-x-4">
+        {% csrf_token %}
+        <a href="{% url 'lista_seguimientos' %}" class="px-6 py-2 border border-zinc-700 rounded hover:bg-white/5 transition text-zinc-300">
+            Cancelar
+        </a>
+        <button type="submit" class="bg-rose-600 text-white px-6 py-2 rounded hover:bg-rose-700 transition shadow-lg shadow-rose-600/20">
+            <i class="fas fa-trash mr-2"></i> Sí, eliminar
+        </button>
+    </form>
+</div>
+{% endblock %}

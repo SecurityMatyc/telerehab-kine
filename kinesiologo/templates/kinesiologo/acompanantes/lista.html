@@ -1,0 +1,75 @@
+{% extends 'kinesiologo/base.html' %}
+
+{% block title %}Acompañantes - TeleRehab{% endblock %}
+
+{% block content %}
+<div class="animate-fade-in-up">
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-2xl font-bold text-white">Acompañantes</h1>
+        <span class="text-sm text-zinc-400 bg-zinc-800/50 px-4 py-2 rounded-full border border-white/5">
+            <i class="fas fa-users mr-2"></i> {{ pacientes|length }} acompañantes
+        </span>
+    </div>
+
+    <p class="text-zinc-400 mb-6">Lista de pacientes que tienen acompañante asignado.</p>
+
+    {% if pacientes %}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for paciente in pacientes %}
+            <div class="group rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-sm p-6 hover:bg-white/[0.06] transition-all duration-300 hover:-translate-y-1 hover:border-teal-400/30 hover:shadow-2xl hover:shadow-teal-500/10">
+                <!-- Avatar y nombre del paciente -->
+                <div class="flex items-center gap-4 mb-4">
+                    <div class="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-indigo-500/30 to-indigo-600/30 text-lg font-semibold text-indigo-300">
+                        {{ paciente.nombre|first|upper }}
+                    </div>
+                    <div>
+                        <h3 class="font-semibold text-white text-lg">{{ paciente.nombre }}</h3>
+                        <p class="text-sm text-zinc-500">{{ paciente.rut }}</p>
+                    </div>
+                </div>
+
+                <!-- Información del acompañante -->
+                <div class="rounded-xl bg-teal-500/5 border border-teal-500/10 p-4">
+                    <p class="text-xs font-medium text-teal-400 uppercase tracking-wider mb-2">
+                        <i class="fas fa-user mr-1"></i> Acompañante
+                    </p>
+                    <p class="font-medium text-white">{{ paciente.acompanante_nombre }}</p>
+                    <p class="text-sm text-zinc-400">{{ paciente.acompanante_parentesco|default:"Parentesco no registrado" }}</p>
+                    <p class="text-sm text-zinc-400 mt-1">
+                        <i class="fas fa-phone mr-1 text-zinc-500"></i> {{ paciente.acompanante_telefono|default:"Sin teléfono" }}
+                    </p>
+                </div>
+
+                <!-- Diagnóstico -->
+                <p class="mt-3 text-sm text-zinc-500">
+                    <span class="text-zinc-400">Diagnóstico:</span> {{ paciente.diagnostico|truncatechars:40 }}
+                </p>
+
+                <!-- Botón ver detalle -->
+                <a href="{% url 'detalle_acompanante' paciente.id %}" class="mt-4 flex items-center justify-center gap-2 w-full bg-teal-600/20 text-teal-300 px-4 py-2.5 rounded-xl hover:bg-teal-600/30 transition border border-teal-500/20">
+                    <i class="fas fa-eye"></i> Ver detalle
+                    <svg class="h-4 w-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 8.25 21 12m0 0-3.75 3.75M21 12H3" />
+                    </svg>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <!-- Estado vacío -->
+        <div class="text-center py-16">
+            <div class="w-24 h-24 mx-auto rounded-full bg-rose-500/10 flex items-center justify-center mb-6">
+                <i class="fas fa-hands-helping text-5xl text-rose-400/50"></i>
+            </div>
+            <h3 class="text-xl font-semibold text-white">No hay acompañantes registrados</h3>
+            <p class="text-zinc-400 mt-2 max-w-md mx-auto">
+                Aún no has asignado acompañantes a tus pacientes. 
+                Puedes hacerlo al <a href="{% url 'lista_pacientes' %}" class="text-teal-400 hover:text-teal-300 transition">editar un paciente</a>.
+            </p>
+            <a href="{% url 'lista_pacientes' %}" class="inline-block mt-6 bg-teal-600 text-white px-6 py-2.5 rounded-xl hover:bg-teal-700 transition shadow-lg shadow-teal-600/20">
+                <i class="fas fa-users mr-2"></i> Ir a pacientes
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

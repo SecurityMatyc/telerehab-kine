@@ -1,0 +1,141 @@
+{% extends 'kinesiologo/base.html' %}
+
+{% block title %}Acompañante de {{ paciente.nombre }} - TeleRehab{% endblock %}
+
+{% block content %}
+<div class="animate-fade-in-up">
+    <div class="flex justify-between items-center mb-6">
+        <div>
+            <h1 class="text-2xl font-bold text-white">Acompañante de {{ paciente.nombre }}</h1>
+            <p class="text-sm text-zinc-400 mt-1">{{ paciente.rut }}</p>
+        </div>
+        <div class="space-x-3">
+            <a href="{% url 'editar_paciente' paciente.id %}" class="bg-teal-600 text-white px-4 py-2 rounded-lg hover:bg-teal-700 transition shadow-lg shadow-teal-600/20">
+                <i class="fas fa-edit mr-2"></i> Editar acompañante
+            </a>
+            <a href="{% url 'lista_acompanantes' %}" class="text-zinc-400 hover:text-white transition">
+                <i class="fas fa-arrow-left mr-2"></i> Volver
+            </a>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Columna 1: Datos del acompañante -->
+        <div class="lg:col-span-1">
+            <div class="rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-sm p-6">
+                <div class="flex items-center gap-4 mb-6">
+                    <div class="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-teal-500/30 to-teal-600/30 text-xl font-semibold text-teal-300">
+                        {{ paciente.acompanante_nombre|first|upper }}
+                    </div>
+                    <div>
+                        <h3 class="font-semibold text-white text-lg">{{ paciente.acompanante_nombre }}</h3>
+                        <p class="text-sm text-zinc-400">{{ paciente.acompanante_parentesco|default:"Parentesco no registrado" }}</p>
+                    </div>
+                </div>
+
+                <div class="space-y-3 border-t border-white/5 pt-4">
+                    <p>
+                        <span class="text-sm text-zinc-500">Teléfono:</span>
+                        <span class="text-white">{{ paciente.acompanante_telefono|default:"-" }}</span>
+                    </p>
+                    <p>
+                        <span class="text-sm text-zinc-500">Parentesco:</span>
+                        <span class="text-white">{{ paciente.acompanante_parentesco|default:"-" }}</span>
+                    </p>
+                    <p>
+                        <span class="text-sm text-zinc-500">Paciente:</span>
+                        <a href="{% url 'detalle_paciente' paciente.id %}" class="text-teal-400 hover:text-teal-300 transition">
+                            {{ paciente.nombre }}
+                        </a>
+                    </p>
+                    <p>
+                        <span class="text-sm text-zinc-500">Diagnóstico:</span>
+                        <span class="text-white">{{ paciente.diagnostico|truncatechars:60 }}</span>
+                    </p>
+                    <p>
+                        <span class="text-sm text-zinc-500">Estado:</span>
+                        <span class="ml-2 px-2.5 py-1 text-xs rounded-full {% if paciente.estado == 'activo' %}bg-green-900/50 text-green-300 border border-green-700/50{% elif paciente.estado == 'inactivo' %}bg-red-900/50 text-red-300 border border-red-700/50{% else %}bg-blue-900/50 text-blue-300 border border-blue-700/50{% endif %}">
+                            {{ paciente.get_estado_display }}
+                        </span>
+                    </p>
+                    <p>
+                        <span class="text-sm text-zinc-500">Material entregado:</span>
+                        <span class="text-white">{{ paciente.get_material_entregado_display }}</span>
+                    </p>
+                </div>
+
+                <div class="mt-4 pt-4 border-t border-white/5">
+                    <a href="{% url 'editar_paciente' paciente.id %}" class="flex items-center justify-center gap-2 w-full bg-teal-600/20 text-teal-300 px-4 py-2.5 rounded-xl hover:bg-teal-600/30 transition border border-teal-500/20">
+                        <i class="fas fa-edit"></i> Editar información
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Columna 2: Historial de seguimientos -->
+        <div class="lg:col-span-2">
+            <div class="rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-sm p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-sm font-semibold text-zinc-400 uppercase tracking-wider">
+                        <i class="fas fa-history mr-2"></i> Historial de seguimientos
+                    </h3>
+                    <a href="{% url 'crear_seguimiento' %}?paciente={{ paciente.id }}" class="text-sm text-teal-400 hover:text-teal-300 transition">
+                        <i class="fas fa-plus mr-1"></i> Registrar seguimiento
+                    </a>
+                </div>
+
+                {% if seguimientos %}
+                    <div class="space-y-3 max-h-96 overflow-y-auto pr-2">
+                        {% for seguimiento in seguimientos %}
+                            <div class="p-4 rounded-xl bg-white/5 hover:bg-white/10 transition">
+                                <div class="flex justify-between items-start">
+                                    <div class="flex-1">
+                                        <div class="flex items-center gap-3">
+                                            <span class="text-sm font-medium text-white">{{ seguimiento.fecha|date:"d/m/Y" }}</span>
+                                            <span class="text-xs px-2.5 py-1 rounded-full {% if seguimiento.cumple_ejercicios %}bg-green-900/50 text-green-300 border border-green-700/50{% else %}bg-red-900/50 text-red-300 border border-red-700/50{% endif %}">
+                                                {% if seguimiento.cumple_ejercicios %}
+                                                    <i class="fas fa-check mr-1"></i> Cumplió
+                                                {% else %}
+                                                    <i class="fas fa-times mr-1"></i> No cumplió
+                                                {% endif %}
+                                            </span>
+                                            <span class="text-xs text-zinc-500">{{ seguimiento.get_tipo_control_display }}</span>
+                                        </div>
+                                        <p class="text-sm text-zinc-400 mt-1">{{ seguimiento.observaciones|default:"Sin observaciones"|truncatechars:120 }}</p>
+                                        <div class="flex items-center gap-4 mt-2">
+                                            <span class="text-xs text-zinc-500">
+                                                <i class="fas fa-user mr-1"></i> 
+                                                {% if seguimiento.acompanante_presente %}
+                                                    <span class="text-green-400">Acompañante presente</span>
+                                                {% else %}
+                                                    <span class="text-zinc-500">Sin acompañante</span>
+                                                {% endif %}
+                                            </span>
+                                            {% if seguimiento.fecha_proximo_control %}
+                                                <span class="text-xs text-teal-400">
+                                                    <i class="fas fa-calendar mr-1"></i> Próximo: {{ seguimiento.fecha_proximo_control|date:"d/m/Y" }}
+                                                </span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <a href="{% url 'detalle_seguimiento' seguimiento.id %}" class="text-zinc-400 hover:text-white transition ml-4">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="text-center py-8 text-zinc-500">
+                        <i class="fas fa-clipboard-list text-4xl block mb-3 opacity-30"></i>
+                        <p>No hay seguimientos registrados para este paciente.</p>
+                        <a href="{% url 'crear_seguimiento' %}?paciente={{ paciente.id }}" class="inline-block mt-3 text-teal-400 hover:text-teal-300 transition text-sm">
+                            <i class="fas fa-plus mr-1"></i> Registrar el primero
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

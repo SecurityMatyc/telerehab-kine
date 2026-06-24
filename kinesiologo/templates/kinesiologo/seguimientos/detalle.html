@@ -1,0 +1,70 @@
+{% extends 'kinesiologo/base.html' %}
+
+{% block title %}Detalle Seguimiento - TeleRehab{% endblock %}
+
+{% block content %}
+<div class="animate-fade-in-up">
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-2xl font-bold text-white">Detalle de Seguimiento</h1>
+        <a href="{% url 'lista_seguimientos' %}" class="text-zinc-400 hover:text-white transition">
+            <i class="fas fa-arrow-left mr-2"></i> Volver
+        </a>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Columna 1: Información -->
+        <div class="rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-sm p-6">
+            <h3 class="text-sm font-semibold text-zinc-400 uppercase tracking-wider mb-4">Información del seguimiento</h3>
+            <div class="space-y-3">
+                <p><span class="text-sm text-zinc-500">Fecha:</span> <span class="text-white">{{ seguimiento.fecha|date:"d/m/Y" }}</span></p>
+                <p><span class="text-sm text-zinc-500">Paciente:</span> 
+                    <a href="{% url 'detalle_paciente' seguimiento.paciente.id %}" class="text-teal-400 hover:text-teal-300 transition">
+                        {{ seguimiento.paciente.nombre }}
+                    </a>
+                </p>
+                <p><span class="text-sm text-zinc-500">Tipo de control:</span> <span class="text-white">{{ seguimiento.get_tipo_control_display }}</span></p>
+                <p><span class="text-sm text-zinc-500">Cumplió ejercicios:</span>
+                    {% if seguimiento.cumple_ejercicios %}
+                        <span class="ml-2 px-2.5 py-1 text-xs rounded-full bg-green-900/50 text-green-300 border border-green-700/50">
+                            <i class="fas fa-check mr-1"></i> Sí
+                        </span>
+                    {% else %}
+                        <span class="ml-2 px-2.5 py-1 text-xs rounded-full bg-red-900/50 text-red-300 border border-red-700/50">
+                            <i class="fas fa-times mr-1"></i> No
+                        </span>
+                    {% endif %}
+                </p>
+                <p><span class="text-sm text-zinc-500">Acompañante presente:</span>
+                    {% if seguimiento.acompanante_presente %}
+                        <span class="ml-2 text-green-400"><i class="fas fa-check-circle"></i> Sí</span>
+                    {% else %}
+                        <span class="ml-2 text-zinc-500"><i class="fas fa-times-circle"></i> No</span>
+                    {% endif %}
+                </p>
+                <p><span class="text-sm text-zinc-500">Kinesiólogo:</span> <span class="text-white">{{ seguimiento.kinesiologo.get_full_name|default:seguimiento.kinesiologo.username }}</span></p>
+                
+                <!-- ======================================== -->
+                <!--   FECHA PRÓXIMO CONTROL - CORREGIDA      -->
+                <!-- ======================================== -->
+                {% if seguimiento.fecha_proximo_control %}
+                    <p><span class="text-sm text-zinc-500">Próximo control:</span> 
+                        <span class="text-teal-300 font-medium">{{ seguimiento.fecha_proximo_control|date:"d/m/Y" }}</span>
+                    </p>
+                {% else %}
+                    <p><span class="text-sm text-zinc-500">Próximo control:</span> 
+                        <span class="text-zinc-500">No programado</span>
+                    </p>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Columna 2: Observaciones -->
+        <div class="rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-sm p-6">
+            <h3 class="text-sm font-semibold text-zinc-400 uppercase tracking-wider mb-4">Observaciones</h3>
+            <div class="bg-zinc-800/50 rounded-xl p-4 text-zinc-300 text-sm leading-relaxed min-h-[150px]">
+                {{ seguimiento.observaciones|default:"Sin observaciones registradas" }}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

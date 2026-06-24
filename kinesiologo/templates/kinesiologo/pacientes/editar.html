@@ -1,0 +1,130 @@
+{% extends 'kinesiologo/base.html' %}
+
+{% block title %}Editar Paciente - TeleRehab{% endblock %}
+
+{% block content %}
+<div class="animate-fade-in-up">
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-2xl font-bold text-white">Editar Paciente</h1>
+        <a href="{% url 'detalle_paciente' paciente.id %}" class="text-zinc-400 hover:text-white transition">
+            <i class="fas fa-arrow-left mr-2"></i> Volver
+        </a>
+    </div>
+
+    <form method="POST" class="space-y-6">
+        {% csrf_token %}
+        
+        <div class="rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-sm p-6">
+            <h2 class="text-lg font-semibold text-white mb-4">Datos personales</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-zinc-300 mb-1">RUT *</label>
+                    <input type="text" name="rut" required value="{{ paciente.rut }}" 
+                           class="w-full px-4 py-2 bg-zinc-800 border border-zinc-700 rounded focus:outline-none focus:ring-2 focus:ring-teal-500 text-white">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-zinc-300 mb-1">Nombre completo *</label>
+                    <input type="text" name="nombre" required value="{{ paciente.nombre }}" 
+                           class="w-full px-4 py-2 bg-zinc-800 border border-zinc-700 rounded focus:outline-none focus:ring-2 focus:ring-teal-500 text-white">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-zinc-300 mb-1">Fecha de nacimiento *</label>
+                    <input type="text" name="fecha_nacimiento" required value="{{ paciente.fecha_nacimiento|date:'Y-m-d' }}" 
+                           class="w-full px-4 py-2 bg-zinc-800 border border-zinc-700 rounded focus:outline-none focus:ring-2 focus:ring-teal-500 text-white placeholder-zinc-500"
+                           placeholder="Selecciona una fecha...">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-zinc-300 mb-1">Teléfono</label>
+                    <input type="text" name="telefono" value="{{ paciente.telefono }}" 
+                           class="w-full px-4 py-2 bg-zinc-800 border border-zinc-700 rounded focus:outline-none focus:ring-2 focus:ring-teal-500 text-white placeholder-zinc-500">
+                </div>
+                <div class="md:col-span-2">
+                    <label class="block text-sm font-medium text-zinc-300 mb-1">Dirección</label>
+                    <input type="text" name="direccion" value="{{ paciente.direccion }}" 
+                           class="w-full px-4 py-2 bg-zinc-800 border border-zinc-700 rounded focus:outline-none focus:ring-2 focus:ring-teal-500 text-white placeholder-zinc-500">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-zinc-300 mb-1">Comuna</label>
+                    <input type="text" name="comuna" value="{{ paciente.comuna }}" 
+                           class="w-full px-4 py-2 bg-zinc-800 border border-zinc-700 rounded focus:outline-none focus:ring-2 focus:ring-teal-500 text-white placeholder-zinc-500">
+                </div>
+            </div>
+        </div>
+
+        <div class="rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-sm p-6">
+            <h2 class="text-lg font-semibold text-white mb-4">Datos clínicos</h2>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-zinc-300 mb-1">Diagnóstico *</label>
+                    <textarea name="diagnostico" rows="3" required 
+                              class="w-full px-4 py-2 bg-zinc-800 border border-zinc-700 rounded focus:outline-none focus:ring-2 focus:ring-teal-500 text-white">{{ paciente.diagnostico }}</textarea>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-zinc-300 mb-1">Estado</label>
+                    <select name="estado" 
+                            class="w-full px-4 py-2 bg-zinc-800 border border-zinc-700 rounded focus:outline-none focus:ring-2 focus:ring-teal-500 text-white">
+                        <option value="activo" {% if paciente.estado == 'activo' %}selected{% endif %}>Activo</option>
+                        <option value="inactivo" {% if paciente.estado == 'inactivo' %}selected{% endif %}>Inactivo</option>
+                        <option value="completado" {% if paciente.estado == 'completado' %}selected{% endif %}>Completado</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-sm p-6">
+            <h2 class="text-lg font-semibold text-white mb-4">Acompañante</h2>
+            <div class="space-y-4">
+                <div class="flex items-center">
+                    <input type="checkbox" name="tiene_acompanante" id="tiene_acompanante" {% if paciente.tiene_acompanante %}checked{% endif %} 
+                           class="w-4 h-4 bg-zinc-800 border-zinc-700 rounded focus:ring-2 focus:ring-teal-500 text-teal-500">
+                    <label for="tiene_acompanante" class="ml-2 text-sm text-zinc-300">El paciente tiene acompañante</label>
+                </div>
+                <div id="acompanante_fields" class="{% if not paciente.tiene_acompanante %}hidden{% endif %} space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-zinc-300 mb-1">Nombre del acompañante</label>
+                            <input type="text" name="acompanante_nombre" value="{{ paciente.acompanante_nombre }}" 
+                                   class="w-full px-4 py-2 bg-zinc-800 border border-zinc-700 rounded focus:outline-none focus:ring-2 focus:ring-teal-500 text-white placeholder-zinc-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-zinc-300 mb-1">Teléfono del acompañante</label>
+                            <input type="text" name="acompanante_telefono" value="{{ paciente.acompanante_telefono }}" 
+                                   class="w-full px-4 py-2 bg-zinc-800 border border-zinc-700 rounded focus:outline-none focus:ring-2 focus:ring-teal-500 text-white placeholder-zinc-500">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-zinc-300 mb-1">Parentesco</label>
+                        <input type="text" name="acompanante_parentesco" value="{{ paciente.acompanante_parentesco }}" 
+                               class="w-full px-4 py-2 bg-zinc-800 border border-zinc-700 rounded focus:outline-none focus:ring-2 focus:ring-teal-500 text-white placeholder-zinc-500">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-sm p-6">
+            <h2 class="text-lg font-semibold text-white mb-4">Material entregado</h2>
+            <div>
+                <select name="material_entregado" 
+                        class="w-full px-4 py-2 bg-zinc-800 border border-zinc-700 rounded focus:outline-none focus:ring-2 focus:ring-teal-500 text-white">
+                    <option value="ninguno" {% if paciente.material_entregado == 'ninguno' %}selected{% endif %}>No entregado</option>
+                    <option value="dvd" {% if paciente.material_entregado == 'dvd' %}selected{% endif %}>DVD</option>
+                    <option value="pendrive" {% if paciente.material_entregado == 'pendrive' %}selected{% endif %}>Pendrive</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="flex justify-end space-x-4">
+            <a href="{% url 'detalle_paciente' paciente.id %}" class="px-6 py-2 border border-zinc-700 rounded hover:bg-white/5 transition text-zinc-300">Cancelar</a>
+            <button type="submit" class="bg-teal-600 text-white px-6 py-2 rounded hover:bg-teal-700 transition shadow-lg shadow-teal-600/20">
+                <i class="fas fa-save mr-2"></i> Actualizar paciente
+            </button>
+        </div>
+    </form>
+</div>
+
+<script>
+    document.getElementById('tiene_acompanante').addEventListener('change', function() {
+        document.getElementById('acompanante_fields').classList.toggle('hidden', !this.checked);
+    });
+</script>
+{% endblock %}

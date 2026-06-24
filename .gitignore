@@ -1,0 +1,12 @@
+venv/
+.venv/
+node_modules/
+__pycache__/
+*.pyc
+db.sqlite3
+*.sqlite3-journal
+.env
+static/css/output.css
+staticfiles/
+.DS_Store
+Thumbs.db

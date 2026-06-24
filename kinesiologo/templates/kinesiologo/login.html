@@ -1,0 +1,75 @@
+{% extends 'kinesiologo/base.html' %}
+
+{% block title %}Iniciar sesión - TeleRehab{% endblock %}
+
+{% block content %}
+<div class="relative flex min-h-screen items-center justify-center overflow-hidden bg-zinc-950 px-4">
+    <!-- Decorative background glow -->
+    <div class="pointer-events-none absolute -left-32 -top-32 h-96 w-96 rounded-full bg-teal-600/20 blur-3xl"></div>
+    <div class="pointer-events-none absolute -bottom-40 -right-32 h-[28rem] w-[28rem] rounded-full bg-indigo-600/20 blur-3xl"></div>
+    <div class="pointer-events-none absolute right-1/4 top-1/4 h-72 w-72 rounded-full bg-fuchsia-600/10 blur-3xl"></div>
+    <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,rgba(255,255,255,0.04)_1px,transparent_0)] [background-size:24px_24px]"></div>
+
+    <div class="relative w-full max-w-md animate-fade-in-up">
+        <div class="mb-8 flex flex-col items-center">
+            <div class="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-teal-400 to-teal-600 shadow-lg shadow-teal-600/30 ring-1 ring-white/10">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-9 w-9 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                </svg>
+            </div>
+            <h1 class="mt-4 text-2xl font-bold tracking-tight text-white">TeleRehab</h1>
+            <p class="mt-1 text-sm text-slate-400">Plataforma de telerehabilitación kinesiológica</p>
+        </div>
+
+        <div class="rounded-3xl border border-white/10 bg-white/[0.04] p-8 shadow-2xl shadow-black/40 backdrop-blur-xl transition-shadow duration-300 hover:shadow-black/60">
+            {% if error %}
+            <div class="mb-5 flex items-center gap-2.5 rounded-xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-400 animate-fade-in">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9.303 3.376c.866 1.5-.217 3.374-1.948 3.374H4.645c-1.731 0-2.814-1.874-1.948-3.374L10.7 4.353c.866-1.5 3.034-1.5 3.9 0l7.302 12.748ZM12 15.75h.007" />
+                </svg>
+                {{ error }}
+            </div>
+            {% endif %}
+
+            <form method="post" class="space-y-5">
+                {% csrf_token %}
+                <div>
+                    <label for="username" class="mb-1.5 block text-sm font-medium text-slate-300">Usuario</label>
+                    <div class="relative">
+                        <span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-500">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                            </svg>
+                        </span>
+                        <input
+                            type="text" id="username" name="username" required autofocus
+                            class="w-full rounded-xl border border-white/10 bg-black/20 py-2.5 pl-10 pr-4 text-slate-100 placeholder-slate-500 outline-none transition-all duration-200 focus:border-teal-500/50 focus:bg-black/30 focus:ring-2 focus:ring-teal-500/30"
+                            placeholder="Ingresa tu usuario">
+                    </div>
+                </div>
+                <div>
+                    <label for="password" class="mb-1.5 block text-sm font-medium text-slate-300">Contraseña</label>
+                    <div class="relative">
+                        <span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-500">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
+                            </svg>
+                        </span>
+                        <input
+                            type="password" id="password" name="password" required
+                            class="w-full rounded-xl border border-white/10 bg-black/20 py-2.5 pl-10 pr-4 text-slate-100 placeholder-slate-500 outline-none transition-all duration-200 focus:border-teal-500/50 focus:bg-black/30 focus:ring-2 focus:ring-teal-500/30"
+                            placeholder="••••••••">
+                    </div>
+                </div>
+                <button
+                    type="submit"
+                    class="w-full rounded-xl bg-gradient-to-r from-teal-500 to-teal-600 px-4 py-2.5 font-semibold text-white shadow-lg shadow-teal-600/20 transition-all duration-200 hover:scale-[1.01] hover:shadow-xl hover:shadow-teal-500/30 active:scale-[0.99] focus:outline-none focus:ring-2 focus:ring-teal-500/50 focus:ring-offset-2 focus:ring-offset-zinc-950">
+                    Ingresar
+                </button>
+            </form>
+        </div>
+
+        <p class="mt-6 text-center text-xs text-slate-500">&copy; {% now "Y" %} TeleRehab. Todos los derechos reservados.</p>
+    </div>
+</div>
+{% endblock %}
